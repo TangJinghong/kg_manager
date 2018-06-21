@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.ac.iie.kg_manager.mapper.RelationMapper" >
+  <resultMap id="BaseResultMap" type="cn.ac.iie.kg_manager.bean.Relation" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="subject_id" property="subjectId" jdbcType="VARCHAR" />
+    <result column="relation" property="relation" jdbcType="VARCHAR" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="cn.ac.iie.kg_manager.bean.Relation" extends="BaseResultMap" >
+    <result column="object" property="object" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, subject_id, relation
+  </sql>
+  <sql id="Blob_Column_List" >
+    object
+  </sql>
+  <select id="selectByRelation" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from relation
+    where relation = #{relation,jdbcType=VARCHAR}
+  </select>
+  <select id="selectDistinctRelation" resultType="java.lang.String">
+    select distinct relation from relation
+    where object not like 'value%'
+  </select>
+  <select id="selectPropertiesBySubjectId" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from relation
+    where subject_id = #{subjectId,jdbcType=VARCHAR}
+    and object like 'value%'
+  </select>
+
+  <select id="selectBySubjectIdAndObject" resultMap="ResultMapWithBLOBs" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from relation
+    where subject_id = #{arg0,jdbcType=VARCHAR}
+    and object = #{arg1, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from relation
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from relation
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="cn.ac.iie.kg_manager.bean.Relation" >
+    insert into relation (id, subject_id, relation, 
+      object)
+    values (#{id,jdbcType=INTEGER}, #{subjectId,jdbcType=VARCHAR}, #{relation,jdbcType=VARCHAR}, 
+      #{object,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.ac.iie.kg_manager.bean.Relation" >
+    insert into relation
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="subjectId != null" >
+        subject_id,
+      </if>
+      <if test="relation != null" >
+        relation,
+      </if>
+      <if test="object != null" >
+        object,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="subjectId != null" >
+        #{subjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="relation != null" >
+        #{relation,jdbcType=VARCHAR},
+      </if>
+      <if test="object != null" >
+        #{object,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.ac.iie.kg_manager.bean.Relation" >
+    update relation
+    <set >
+      <if test="subjectId != null" >
+        subject_id = #{subjectId,jdbcType=VARCHAR},
+      </if>
+      <if test="relation != null" >
+        relation = #{relation,jdbcType=VARCHAR},
+      </if>
+      <if test="object != null" >
+        object = #{object,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="cn.ac.iie.kg_manager.bean.Relation" >
+    update relation
+    set subject_id = #{subjectId,jdbcType=VARCHAR},
+      relation = #{relation,jdbcType=VARCHAR},
+      object = #{object,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.ac.iie.kg_manager.bean.Relation" >
+    update relation
+    set subject_id = #{subjectId,jdbcType=VARCHAR},
+      relation = #{relation,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
